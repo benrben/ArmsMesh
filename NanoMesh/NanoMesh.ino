@@ -26,13 +26,12 @@ void loop() {
     String command = Serial.readString();
     if(command.indexOf("<SEND>") != -1){
       while(Serial.available()<=0){};
-      String str = Serial.readString(); 
+      String str = command.substring(6); 
       sendMessage(str);
     }
     if(command.indexOf("<SET_NODE_ID>") != -1){
-        Serial.println(command);
         while(Serial.available()<=0){};
-        NodeId = Serial.readString().toInt();
+        NodeId = command.substring(13).toInt();
         Serial.print("<CHANGE_ID> ");
         Serial.println(NodeId);
     }

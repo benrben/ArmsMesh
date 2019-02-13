@@ -35,6 +35,6 @@ byte addresses[][6] = {"00001"};
 uint64_t testTimer = 0;
 
 MsgQueue msgIdQueue;
-#define TEST_MODE
+//#define TEST_MODE
 
 #endif
