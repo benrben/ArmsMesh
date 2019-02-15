@@ -17,12 +17,13 @@ void(* resetFunc) (void) = 0; //declare reset function @ address 0
 // EEPROM: memory whose values are kept when the board is turned off (like a tiny hard drive).
 // This library enables you to read and write those bytes
 
-#define MASSEGE_SIZE 24
+#define MASSEGE_SIZE 22
 
 RF24 radio (7,8);
 uint8_t NodeId = 6;
 
 typedef struct payload{
+  uint16_t Msg_Id;
   uint32_t timestemp;
   uint8_t src;
   uint8_t dest;

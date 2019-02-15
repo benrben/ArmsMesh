@@ -33,6 +33,7 @@ void loop() {
         while(!(Serial.available()>0)){}
           Serial.readStringUntil('\n').substring(2).toCharArray(payload.data,sizeof(payload.data));
         payload.src = NodeId;
+        payload.Msg_Id = millis()
         sendMessage(payload);
     }
 //    if(command == "<SET_NODE_ID>"){
@@ -55,20 +56,13 @@ void loop() {
 void reciveMessage(){
   payload_t payload;
   radio.read(&payload,sizeof(payload_t));
-        Serial.println("<NEW_MSG>");
-      Serial.print("<MSG_ID> ");
-      Serial.println(payload.timestemp);
-      Serial.print("<SRC> ");
-      Serial.println(payload.src);
-      Serial.print("<DATA> ");
-      Serial.println(payload.data);
-      Serial.println("<END_MSG>");    
-
-  if(!msgIdQueue.isExist(payload.timestemp)){
-    msgIdQueue.enQueue(payload.timestemp);
+  if(!msgIdQueue.isExist(payload.Msg_Id)){
+    msgIdQueue.enQueue(payload.Msg_Id);
     if(payload.dest == NodeId){                                 //If it's for me - insert to PI
       Serial.println("<NEW_MSG>");
       Serial.print("<MSG_ID> ");
+      Serial.println(payload.Msg_Id);
+      Serial.print("<TIMESTEMP> ");
       Serial.println(payload.timestemp);
       Serial.print("<SRC> ");
       Serial.println(payload.src);
