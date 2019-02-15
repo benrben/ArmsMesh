@@ -10,8 +10,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   radio.begin();
-  Serial.print("<START> ");
-  Serial.println(NodeId);
+  Serial.print("<START>");
   radio.openReadingPipe(1,addresses[0]);
   radio.openWritingPipe(addresses[0]); 
   radio.startListening();  
@@ -36,12 +35,12 @@ void loop() {
         payload.Msg_Id = millis()
         sendMessage(payload);
     }
-//    if(command == "<SET_NODE_ID>"){
-//        while(Serial.available()<=0){};
-//        NodeId = command.substring(13).toInt();
-//        Serial.print("<CHANGE_ID> ");
-//        Serial.println(NodeId);
-//    }
+    if(command == "<SET_NODE_ID>"){
+        while(Serial.available()<=0){};
+        NodeId = Serial.readStringUntil('\n').toInt();
+        Serial.print("<CHANGE_ID> ");
+        Serial.println(NodeId);
+    }
   
   }
   

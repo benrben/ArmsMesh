@@ -17,11 +17,9 @@ def testFunction():
                         bridge.write(message.get_message())
                         time.sleep(1)
                         message.acc(23.12,23.12,15.23)
-                        message.set_dest(0)
                         bridge.write(message.get_message())
                         time.sleep(1)
                         message.puls(144)
-                        message.set_dest(0)
                         bridge.write(message.get_message())
                         time.sleep(1)
 
@@ -31,6 +29,8 @@ def main():
         print "Running..."  
         t = threading.Thread(name = 'rfbridge',target=bridge.begin)
         t.start()
+        time.sleep(2)
+        bridge.set_nodeid(12)
         testFunction()
 
 if __name__ == "__main__":
