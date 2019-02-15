@@ -1,7 +1,7 @@
 #include "config.h"
 
 void reciveMessage();
-void sendMessage(String str);
+void sendMessage(payload_t payload);
 void testFunction();
 
 
@@ -14,7 +14,7 @@ void setup() {
   Serial.println(NodeId);
   radio.openReadingPipe(1,addresses[0]);
   radio.openWritingPipe(addresses[0]); 
-  radio.startListening();
+  radio.startListening();  
 }
 
 void loop() {
@@ -23,18 +23,24 @@ void loop() {
 
   //If there is new message to send - send it
   if(Serial.available()>0){ 
-    String command = Serial.readString();
-    if(command.indexOf("<SEND>") != -1){
-      while(Serial.available()<=0){};
-      String str = command.substring(6); 
-      sendMessage(str);
+    String command = Serial.readStringUntil('\n');
+    if(command == "<SEND>"){
+        payload_t payload;
+        while(!(Serial.available()>0)){}
+            payload.dest = Serial.readStringUntil('\n').substring(2).toInt();
+        while(!(Serial.available()>0)){}
+            payload.timestemp = Serial.readStringUntil('\n').substring(2).toInt();
+        while(!(Serial.available()>0)){}
+          Serial.readStringUntil('\n').substring(2).toCharArray(payload.data,sizeof(payload.data));
+        payload.src = NodeId;
+        sendMessage(payload);
     }
-    if(command.indexOf("<SET_NODE_ID>") != -1){
-        while(Serial.available()<=0){};
-        NodeId = command.substring(13).toInt();
-        Serial.print("<CHANGE_ID> ");
-        Serial.println(NodeId);
-    }
+//    if(command == "<SET_NODE_ID>"){
+//        while(Serial.available()<=0){};
+//        NodeId = command.substring(13).toInt();
+//        Serial.print("<CHANGE_ID> ");
+//        Serial.println(NodeId);
+//    }
   
   }
   
@@ -49,13 +55,21 @@ void loop() {
 void reciveMessage(){
   payload_t payload;
   radio.read(&payload,sizeof(payload_t));
-  uint8_t dest = payload.data[0] - '0';
-  if(!msgIdQueue.isExist(payload.Msg_id)){
-    msgIdQueue.enQueue(payload.Msg_id);
-    if(dest == NodeId){                                 //If it's for me - insert to PI
+        Serial.println("<NEW_MSG>");
+      Serial.print("<MSG_ID> ");
+      Serial.println(payload.timestemp);
+      Serial.print("<SRC> ");
+      Serial.println(payload.src);
+      Serial.print("<DATA> ");
+      Serial.println(payload.data);
+      Serial.println("<END_MSG>");    
+
+  if(!msgIdQueue.isExist(payload.timestemp)){
+    msgIdQueue.enQueue(payload.timestemp);
+    if(payload.dest == NodeId){                                 //If it's for me - insert to PI
       Serial.println("<NEW_MSG>");
       Serial.print("<MSG_ID> ");
-      Serial.println(payload.Msg_id);
+      Serial.println(payload.timestemp);
       Serial.print("<SRC> ");
       Serial.println(payload.src);
       Serial.print("<DATA> ");
@@ -73,14 +87,14 @@ void reciveMessage(){
 
 };
 
-void sendMessage(String str){
-  if(str[0]-'0' != NodeId){
+void sendMessage(payload_t payload){
+  Serial.println(payload.dest);
+  Serial.println(payload.timestemp);
+  Serial.println(payload.src);
+  Serial.println(payload.data);
+  if(payload.dest != NodeId){
     radio.stopListening();
     delay(100);
-    payload_t payload;
-    str.toCharArray(payload.data,sizeof(payload.data));
-    payload.Msg_id = millis();
-    payload.src = NodeId;
     radio.write(&payload,sizeof(payload_t),1);
     delay(100);
     radio.startListening();  
@@ -89,20 +103,20 @@ void sendMessage(String str){
 
 
 
-void testFunction(){
-  //this massage will broadcast to all eventualy
-  if(millis() - testTimer > 5000){
-    testTimer = millis();
-    String test = "0 <GPS: 42.12 32.43>";
-    sendMessage(test);
-    delay(100);
-    test = "0 <BPM: 62>";
-    sendMessage(test);
-    delay(100);
-    test = "0 <ACC: 12 13>";
-    sendMessage(test);
-    delay(100);
-    test = "0 <EMERG: NO>";
-    sendMessage(test);
-  }
-};
+//void testFunction(){
+//  //this massage will broadcast to all eventualy
+//  if(millis() - testTimer > 5000){
+//    testTimer = millis();
+//    String test = "0 <GPS: 42.12 32.43>";
+//    sendMessage(test);
+//    delay(100);
+//    test = "0 <BPM: 62>";
+//    sendMessage(test);
+//    delay(100);
+//    test = "0 <ACC: 12 13>";
+//    sendMessage(test);
+//    delay(100);
+//    test = "0 <EMERG: NO>";
+//    sendMessage(test);
+//  }
+//};

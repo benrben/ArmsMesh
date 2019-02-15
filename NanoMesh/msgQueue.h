@@ -7,7 +7,7 @@
 
 class MsgQueue{
   private:
-    uint8_t msgQueue[MAX_QUEUE_SIZE];
+    uint32_t msgQueue[MAX_QUEUE_SIZE];
     int capacity;
     int dequeueTimer;
   public:
