@@ -97,20 +97,16 @@ void sendMessage(payload_t payload){
 
 
 
-//void testFunction(){
-//  //this massage will broadcast to all eventualy
-//  if(millis() - testTimer > 5000){
-//    testTimer = millis();
-//    String test = "0 <GPS: 42.12 32.43>";
-//    sendMessage(test);
-//    delay(100);
-//    test = "0 <BPM: 62>";
-//    sendMessage(test);
-//    delay(100);
-//    test = "0 <ACC: 12 13>";
-//    sendMessage(test);
-//    delay(100);
-//    test = "0 <EMERG: NO>";
-//    sendMessage(test);
-//  }
-//};
+void testFunction(){
+  //this massage will broadcast to all eventualy
+  if(millis() - testTimer > 5000){
+    testTimer = millis();    
+    payload_t payload;
+    payload.dest = 0;
+    payload.timestemp = 1312423532;
+    strcpy(payload.data,"g:x:12.23y:34.12");
+    payload.src = NodeId;
+    payload.Msg_Id = millis()
+    sendMessage(payload);
+  }
+};
