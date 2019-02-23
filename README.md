@@ -1,6 +1,6 @@
 Overview
 
-	As of today there are several major challenges that the military is facing related to communication and connection of forces at the operational time in which soldiers are sent on a high risk combat operation and there is a need to coordinate and cooperate with other forces in the sector. 
+As of today there are several major challenges that the military is facing related to communication and connection of forces at the operational time in which soldiers are sent on a high risk combat operation and there is a need to coordinate and cooperate with other forces in the sector. 
 
 
 An infantry task force usually has up to a dozen soldiers - only one of whom has a communication device and is the only one who can transmit and receive transmissions from other forces.
