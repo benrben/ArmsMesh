@@ -1,9 +1,21 @@
 from rfbridge import RFBridge 
 import threading
 import time
-from message import Message
+from sensor import GPS,ACC,PULSE,EMARG
+from Message import Message
+from redisConnection import RedisTools
 
-bridge = RFBridge()
+nodeid = 7
+redisTool = RedisTools()
+bridge = RFBridge(nodeid,redisTool)
+
+sensors = []
+sensors.append(GPS())
+sensors.append(ACC())
+sensors.append(PULSE())
+sensors.append(EMARG())
+
+
 
 def testFunction():
         timer = int(round(time.time() * 1000))
@@ -12,18 +24,13 @@ def testFunction():
                 delta = int(round(time.time() * 1000))-timer
                 if delta > 3000:
                         timer = int(round(time.time() * 1000))
-                        message.gps(23.12,23.12)
-                        message.set_dest(0)
-                        bridge.write(message.get_message())
-                        time.sleep(1)
-                        message.acc(23.12,23.12,15.23)
-                        bridge.write(message.get_message())
-                        time.sleep(1)
-                        message.puls(144)
-                        bridge.write(message.get_message())
-                        time.sleep(1)
-
-
+                        for sense in sensors:
+                                message.set_data(sense.collect())
+                                message.set_dest(0)
+                                msg = message.get_message()
+                                bridge.write(msg)
+                                #Here push msg to redis
+                                time.sleep(1)
 
 def main():
         print "Running..."  

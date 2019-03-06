@@ -4,21 +4,8 @@ class Message:
     time = time.time()
     data = ''
 
-    def puls(self,val):
-        self.time = time.time()
-        self.data = 'p:' + str(val)
-
-    def emarg(self):
-        self.time = time.time()
-        self.data = 'e:1'
-    
-    def acc(self,x,y,z):
-        self.time = time.time()
-        self.data = 'a:x:'+str(x)+'y:'+str(y)+'z:'+str(z)
-
-    def gps(self,x,y):
-        self.time = time.time()
-        self.data = 'g:'+'x:'+str(x)+'y:'+str(y)
+    def set_data(self,data):
+        self.data = data
 
     def get_message(self):
         msg = 'd:' + str(self.dest) + '\n'
