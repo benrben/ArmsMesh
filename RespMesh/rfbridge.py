@@ -1,10 +1,11 @@
 import serial
 import sys
 import platform
+from Message import Message
 
 COM = '/dev/ttyUSB0'
 if platform.system() == 'Windows':
-        COM = 'COM4'
+        COM = 'COM6'
 
 ser = serial.Serial(COM,115200)
 
@@ -23,6 +24,14 @@ class RFBridge:
                                 print line
                                 if line == '<START>':
                                         self.set_nodeid(self.nodeid)  
+                                if '<NEW_MSG>' in line:
+                                        message = Message()
+                                        message.set_msg_id(self.read()[9:])
+                                        message.set_time(self.read()[12:])
+                                        message.set_src(src = self.read()[6:])
+                                        message.set_data(self.read()[7:])
+                                        print message.get_message()
+                                        # message.get_message() push to redis
 
 	def read(self):
                 return ser.readline()
@@ -31,4 +40,4 @@ class RFBridge:
                 ser.writelines('<SEND>'+'\n'+str(message)+'\n')
 
         def set_nodeid(self,nodeid):
-                ser.writelines('<SET_NODE_ID>'+'\n'+str(nodeid)+'\n')
+                ser.writelines('<SET_NODE_ID>'+'\n'+str(self.nodeid)+'\n')

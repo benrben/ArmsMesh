@@ -10,7 +10,7 @@ void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
   radio.begin();
-  Serial.print("<START>");
+  Serial.println("<START>");
   radio.openReadingPipe(1,addresses[0]);
   radio.openWritingPipe(addresses[0]); 
   radio.startListening();  
@@ -32,7 +32,7 @@ void loop() {
         while(!(Serial.available()>0)){}
           Serial.readStringUntil('\n').substring(2).toCharArray(payload.data,sizeof(payload.data));
         payload.src = NodeId;
-        payload.Msg_Id = millis()
+        payload.Msg_Id = millis();
         sendMessage(payload);
     }
     if(command == "<SET_NODE_ID>"){
@@ -81,10 +81,10 @@ void reciveMessage(){
 };
 
 void sendMessage(payload_t payload){
-  Serial.println(payload.dest);
-  Serial.println(payload.timestemp);
-  Serial.println(payload.src);
-  Serial.println(payload.data);
+//  Serial.println(payload.dest);
+//  Serial.println(payload.timestemp);
+//  Serial.println(payload.src);
+//  Serial.println(payload.data);
   if(payload.dest != NodeId){
     radio.stopListening();
     delay(100);
@@ -105,7 +105,7 @@ void testFunction(){
     payload.timestemp = 1312423532;
     strcpy(payload.data,"g:x:12.23y:34.12");
     payload.src = NodeId;
-    payload.Msg_Id = millis()
+    payload.Msg_Id = millis();
     sendMessage(payload);
   }
 };
