@@ -50,7 +50,7 @@ void reciveMessage(){
   radio.read(&payload,sizeof(payload_t));
   if(!msgIdQueue.isExist(payload.Msg_Id)){
     msgIdQueue.enQueue(payload.Msg_Id);
-    if(payload.dest == NodeId){                                 //If it's for me - insert to PI
+    if(payload.dest%3 == 0){                                 //If it's for me - insert to PI
       Serial.println("<NEW_MSG>");
       Serial.print("<MSG_ID> ");
       Serial.println(payload.Msg_Id);
