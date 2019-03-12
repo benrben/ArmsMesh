@@ -10,7 +10,7 @@ if platform.system() == 'Windows':
 else:
         from sensor import GPS,ACC,PULSE,EMARG
 
-nodeid = 80
+nodeid = 12
 redisTool = RedisTools()
 bridge = RFBridge(nodeid,redisTool)
 
@@ -29,7 +29,7 @@ def run():
                         for sense in sensors:
                                 message = Message()
                                 message.set_data(sense.collect())
-                                message.set_dest(83)
+                                message.set_dest(80)
                                 msg = message.get_message()
                                 bridge.write(msg)
                                 #Here push msg to redis

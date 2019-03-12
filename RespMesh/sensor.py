@@ -1,6 +1,5 @@
 import RPi.GPIO as GPIO # Import Raspberry Pi GPIO library    
-import threading
-
+import time
 
 class GPS:
     def __init__(self):
@@ -42,11 +41,8 @@ class PULSE:
 
 class EMARG:
     def __init__(self):
-        self.value = False
-        self.setup()
-        # t = threading.Thread(name = 'emarglisten',target=self.listen)
-        # t.start()
-
+		self.value = False
+		self.setup()
 
     def setup(self):
         GPIO.setwarnings(False) # Ignore warning for now
@@ -55,12 +51,15 @@ class EMARG:
         GPIO.add_event_detect(10,GPIO.RISING,callback=self.listen) # Setup event on pin 10 rising edge
     
     def collect(self):
-        result = 'E:'
-        result += str(self.value)
-        self.value = False
-        return result
+		result = 'E:'
+		result += str(self.value)	
+		print result
+		return result
 
-    def listen(self):
-        while True: # Run forever
-            if GPIO.input(10) == GPIO.HIGH:
-                self.value = True
+    def listen(self,channel):
+		if self.value != True:
+			self.value = True
+			time.sleep(30)
+			self.value = False
+		
+
