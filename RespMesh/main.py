@@ -1,37 +1,47 @@
 from rfbridge import RFBridge 
 import threading
 import time
-from message import Message
+import platform
+from Message import Message
+from redisConnection import RedisTools
 
-bridge = RFBridge()
+if platform.system() == 'Windows':
+        from sensorTest import GPS,ACC,PULSE,EMARG
+else:
+        from sensor import GPS,ACC,PULSE,EMARG
 
-def testFunction():
+nodeid = 12
+redisTool = RedisTools()
+bridge = RFBridge(nodeid,redisTool)
+
+sensors = []
+sensors.append(GPS())
+sensors.append(ACC())
+sensors.append(PULSE())
+sensors.append(EMARG())
+
+def run():
         timer = int(round(time.time() * 1000))
-        message = Message()
         while(1):
                 delta = int(round(time.time() * 1000))-timer
                 if delta > 3000:
                         timer = int(round(time.time() * 1000))
-                        message.gps(23.12,23.12)
-                        message.set_dest(0)
-                        bridge.write(message.get_message())
-                        time.sleep(1)
-                        message.acc(23.12,23.12,15.23)
-                        bridge.write(message.get_message())
-                        time.sleep(1)
-                        message.puls(144)
-                        bridge.write(message.get_message())
-                        time.sleep(1)
-
-
+                        for sense in sensors:
+                                message = Message()
+                                message.set_data(sense.collect())
+                                message.set_dest(80)
+                                msg = message.get_message()
+                                bridge.write(msg)
+                                #Here push msg to redis
+                                time.sleep(1)
 
 def main():
-        print "Running..."  
+        print "Running..."
         t = threading.Thread(name = 'rfbridge',target=bridge.begin)
         t.start()
         time.sleep(2)
         bridge.set_nodeid(12)
-        testFunction()
+        run()
 
 if __name__ == "__main__":
         main()
