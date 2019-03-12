@@ -20,7 +20,7 @@ void(* resetFunc) (void) = 0; //declare reset function @ address 0
 #define MASSEGE_SIZE 22
 
 RF24 radio (7,8);
-uint8_t NodeId = 6;
+int NodeId = 6;
 
 typedef struct payload{
   uint16_t Msg_Id;

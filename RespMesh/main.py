@@ -1,9 +1,14 @@
 from rfbridge import RFBridge 
 import threading
 import time
-from sensor import GPS,ACC,PULSE,EMARG
+import platform
 from Message import Message
 from redisConnection import RedisTools
+
+if platform.system() == 'Windows':
+        from sensorTest import GPS,ACC,PULSE,EMARG
+else:
+        from sensor import GPS,ACC,PULSE,EMARG
 
 nodeid = 80
 redisTool = RedisTools()

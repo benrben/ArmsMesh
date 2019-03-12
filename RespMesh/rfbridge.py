@@ -5,7 +5,7 @@ from Message import Message
 
 COM = '/dev/ttyUSB0'
 if platform.system() == 'Windows':
-        COM = 'COM6'
+        COM = 'COM4'
 
 ser = serial.Serial(COM,115200)
 
