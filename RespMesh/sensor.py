@@ -44,14 +44,15 @@ class EMARG:
     def __init__(self):
         self.value = False
         self.setup()
-        t = threading.Thread(name = 'emarglisten',target=self.listen)
-        t.start()
+        # t = threading.Thread(name = 'emarglisten',target=self.listen)
+        # t.start()
 
 
     def setup(self):
         GPIO.setwarnings(False) # Ignore warning for now
         GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
         GPIO.setup(10, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        GPIO.add_event_detect(10,GPIO.RISING,callback=self.listen) # Setup event on pin 10 rising edge
     
     def collect(self):
         result = 'E:'
