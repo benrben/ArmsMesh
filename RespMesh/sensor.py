@@ -9,16 +9,17 @@ class GPS:
 		self.ser = serial.Serial("/dev/ttyAMA0",9600, timeout = 0.5)
 
     def collect(self):
-		while True:
+		try:
+			while True:
+				sentence = self.ser.readline()			
+				if sentence == "": break	
+				if sentence.find('GGA') > 0:		
+					lat = float(sentence.split(',')[2])/100
+					lon = float(sentence.split(',')[4])/100
+					value = 'G:'+str(lat)+':'+str(lon)
+					break
+		except:
 			value = 'G:X:0.0Y:0.0'
-			sentence = self.ser.readline()
-			print sentence
-			if sentence == "": break	
-			if sentence.find('GGA') > 0:		
-				lat = float(sentence.split(',')[2])/100
-				lon = float(sentence.split(',')[4])/100
-				value = 'G:'+str(lat)+':'+str(lon)
-				break
 		print value
 		return value
 
